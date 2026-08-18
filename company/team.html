@@ -1,0 +1,599 @@
+<title>Meridian 사람들</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@600;700&family=IBM+Plex+Sans+KR:wght@400;500;600&family=IBM+Plex+Serif:ital,wght@0,400;1,400&display=swap">
+
+<style>
+:root{
+  --ground:#EDEFF3;
+  --surface:#FFFFFF;
+  --surface-2:#F6F7FA;
+  --ink:#10141F;
+  --ink-muted:#5A6178;
+  --ink-faint:#868DA3;
+  --hairline:#D5D9E3;
+  --accent:#2743D6;
+  --accent-soft:#E3E7FB;
+  --friction:#AF3E27;
+  --friction-soft:#F7E4DF;
+  --steady:#1B6B54;
+
+  --sans:"IBM Plex Sans KR","IBM Plex Sans",system-ui,-apple-system,sans-serif;
+  --cond:"IBM Plex Sans Condensed","IBM Plex Sans KR",system-ui,sans-serif;
+  --serif:"IBM Plex Serif","IBM Plex Sans KR",Georgia,serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#0A0D14;
+    --surface:#121724;
+    --surface-2:#171D2D;
+    --ink:#E8EAF1;
+    --ink-muted:#9AA2B9;
+    --ink-faint:#727A92;
+    --hairline:#262D40;
+    --accent:#8EA2FF;
+    --accent-soft:#1B2340;
+    --friction:#E0846B;
+    --friction-soft:#3A2018;
+    --steady:#5FBF9E;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0A0D14;
+  --surface:#121724;
+  --surface-2:#171D2D;
+  --ink:#E8EAF1;
+  --ink-muted:#9AA2B9;
+  --ink-faint:#727A92;
+  --hairline:#262D40;
+  --accent:#8EA2FF;
+  --accent-soft:#1B2340;
+  --friction:#E0846B;
+  --friction-soft:#3A2018;
+  --steady:#5FBF9E;
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--ground);
+  color:var(--ink);
+  font-family:var(--sans);
+  font-size:15px;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+
+/* ---------- masthead ---------- */
+.masthead{
+  border-bottom:1px solid var(--hairline);
+  background:var(--surface);
+  position:relative;
+  overflow:hidden;
+}
+.meridians{
+  position:absolute;inset:0;
+  pointer-events:none;
+  opacity:.55;
+}
+.masthead .wrap{position:relative;padding-top:40px;padding-bottom:0}
+.eyebrow{
+  font-family:var(--mono);
+  font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--ink-faint);
+  margin:0 0 14px;
+}
+.wordmark{
+  font-family:var(--cond);
+  font-weight:700;
+  font-size:clamp(40px,7vw,68px);
+  letter-spacing:.06em;
+  line-height:1;
+  margin:0;
+  text-transform:uppercase;
+}
+.wordmark span{color:var(--accent)}
+.lede{
+  font-family:var(--serif);
+  font-size:clamp(16px,2vw,19px);
+  color:var(--ink-muted);
+  max-width:58ch;
+  margin:16px 0 0;
+}
+.stats{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  gap:1px;
+  background:var(--hairline);
+  border-top:1px solid var(--hairline);
+  margin-top:32px;
+}
+.stat{background:var(--surface);padding:14px 18px}
+.stat dt{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--ink-faint);margin:0 0 4px;
+}
+.stat dd{
+  margin:0;font-family:var(--cond);font-weight:600;font-size:22px;
+  font-variant-numeric:tabular-nums;letter-spacing:.01em;
+}
+
+/* ---------- sections ---------- */
+section{padding:56px 0}
+.sec-head{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:8px}
+h2{
+  font-family:var(--cond);font-weight:700;font-size:26px;letter-spacing:.02em;
+  margin:0;text-wrap:balance;
+}
+.sec-num{
+  font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--accent);
+}
+.sec-note{color:var(--ink-muted);max-width:66ch;margin:0 0 28px;font-size:14.5px}
+
+/* ---------- belonging chain ---------- */
+.chain{
+  display:flex;flex-wrap:wrap;align-items:stretch;gap:1px;
+  background:var(--hairline);border:1px solid var(--hairline);
+}
+.chain > div{background:var(--surface);padding:14px 18px;flex:1 1 180px}
+.chain .here{background:var(--accent-soft)}
+.chain b{display:block;font-family:var(--cond);font-weight:600;font-size:16px}
+.chain small{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint)}
+.owns{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:1px;background:var(--hairline);border:1px solid var(--hairline);border-top:0;
+}
+.owns > div{background:var(--surface);padding:16px 18px}
+.owns h3{
+  font-family:var(--mono);font-size:11px;letter-spacing:.13em;text-transform:uppercase;
+  margin:0 0 8px;color:var(--ink-faint);
+}
+.owns p{margin:0;font-size:14px;color:var(--ink-muted)}
+.owns .yes h3{color:var(--steady)}
+.owns .no h3{color:var(--friction)}
+
+/* ---------- filters ---------- */
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px}
+.filters button{
+  font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;
+  padding:7px 13px;border:1px solid var(--hairline);background:var(--surface);
+  color:var(--ink-muted);cursor:pointer;border-radius:2px;
+  transition:background .15s,color .15s,border-color .15s;
+}
+.filters button:hover{border-color:var(--accent);color:var(--ink)}
+.filters button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+.filters button:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* ---------- roster ---------- */
+.roster{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(322px,1fr));
+  gap:1px;background:var(--hairline);border:1px solid var(--hairline);
+}
+.card{background:var(--surface);padding:20px;display:flex;flex-direction:column;gap:13px}
+.card[hidden]{display:none}
+.card.you{background:var(--accent-soft)}
+.card-top{display:flex;gap:13px;align-items:flex-start}
+.mono-tile{
+  flex:0 0 auto;width:46px;height:46px;display:grid;place-items:center;
+  background:var(--surface-2);border:1px solid var(--hairline);
+  font-family:var(--cond);font-weight:700;font-size:16px;letter-spacing:.02em;
+}
+.card.you .mono-tile{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+.card-id{
+  font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:var(--ink-faint);
+  display:block;margin-bottom:3px;
+}
+.card-name{font-family:var(--cond);font-weight:700;font-size:19px;line-height:1.2;margin:0}
+.card-name em{font-style:normal;color:var(--ink-faint);font-weight:600;font-size:14px;margin-left:6px}
+.card-role{font-size:13.5px;color:var(--ink-muted);margin:3px 0 0}
+.tags{display:flex;flex-wrap:wrap;gap:5px}
+.tags span{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;
+  padding:3px 7px;background:var(--surface-2);border:1px solid var(--hairline);color:var(--ink-muted);
+}
+.card.you .tags span{background:var(--surface)}
+blockquote{
+  margin:0;padding-left:14px;border-left:2px solid var(--accent);
+  font-family:var(--serif);font-style:italic;font-size:14.5px;line-height:1.55;color:var(--ink);
+}
+.meets{
+  margin:0;padding-top:12px;border-top:1px solid var(--hairline);
+  font-size:13.5px;color:var(--ink-muted);
+}
+.meets b{
+  display:block;font-family:var(--mono);font-weight:400;font-size:10px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--ink-faint);margin-bottom:4px;
+}
+.friction{color:var(--friction)}
+.friction b{color:var(--friction)}
+
+/* ---------- map ---------- */
+.map-scroll{overflow-x:auto;border:1px solid var(--hairline);background:var(--surface)}
+.map-scroll svg{display:block;min-width:940px;width:100%;height:auto}
+.legend{
+  display:flex;flex-wrap:wrap;gap:18px;margin-top:16px;
+  font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--ink-muted);
+}
+.legend i{display:inline-block;width:26px;height:0;border-top-width:2px;border-top-style:solid;vertical-align:middle;margin-right:7px}
+
+/* ---------- footer ---------- */
+footer{border-top:1px solid var(--hairline);background:var(--surface);padding:36px 0 52px}
+footer p{color:var(--ink-muted);font-size:14px;max-width:70ch}
+.cmds{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.cmds code{
+  font-family:var(--mono);font-size:12px;padding:6px 10px;
+  background:var(--surface-2);border:1px solid var(--hairline);color:var(--ink);
+}
+.fine{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);margin-top:28px}
+
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<header class="masthead">
+  <svg class="meridians" viewBox="0 0 1200 300" preserveAspectRatio="none" aria-hidden="true">
+    <g fill="none" stroke="var(--hairline)" stroke-width="1">
+      <path d="M0 300 Q 300 120 600 120 T 1200 300"/>
+      <path d="M0 300 Q 300 180 600 180 T 1200 300"/>
+      <path d="M0 300 Q 300 240 600 240 T 1200 300"/>
+      <line x1="600" y1="0" x2="600" y2="300"/>
+      <line x1="420" y1="60" x2="420" y2="300"/>
+      <line x1="780" y1="60" x2="780" y2="300"/>
+      <line x1="240" y1="140" x2="240" y2="300"/>
+      <line x1="960" y1="140" x2="960" y2="300"/>
+    </g>
+  </svg>
+  <div class="wrap">
+    <p class="eyebrow">Meridian · Retail Experience · Product Detail Platform</p>
+    <h1 class="wordmark">Meridian<span>.</span></h1>
+    <p class="lede">21개국 마켓플레이스, 7.2억 SKU를 굴리는 가상의 이커머스 회사. 아래 12명이 요구사항을 내고, 리뷰하고, 배포를 막는다. 당신은 그 사이에 있는 개발자다.</p>
+    <dl class="stats">
+      <div class="stat"><dt>등록 SKU</dt><dd>7.2억</dd></div>
+      <div class="stat"><dt>마켓플레이스</dt><dd>21개국</dd></div>
+      <div class="stat"><dt>평상시 PDP</dt><dd>420k RPS</dd></div>
+      <div class="stat"><dt>피크</dt><dd>1.1M RPS</dd></div>
+      <div class="stat"><dt>p99 목표</dt><dd>120ms</dd></div>
+      <div class="stat"><dt>가용성</dt><dd>99.99%</dd></div>
+    </dl>
+  </div>
+</header>
+
+<main class="wrap">
+
+<section id="belong">
+  <div class="sec-head"><span class="sec-num">01</span><h2>내가 앉아 있는 자리</h2></div>
+  <p class="sec-note">조직도상의 위치가 곧 책임 범위다. 우리가 소유하지 않은 것은 API 계약으로만 대화하고, 그쪽은 언제든 느려지거나 죽는다.</p>
+  <div class="chain">
+    <div><small>Division</small><b>Meridian Technology</b></div>
+    <div><small>Org</small><b>Retail Experience</b></div>
+    <div><small>Group</small><b>Catalog &amp; Discovery</b></div>
+    <div class="here"><small>Team · 8명</small><b>Product Detail Platform</b></div>
+  </div>
+  <div class="owns">
+    <div class="yes">
+      <h3>우리가 소유한 것</h3>
+      <p>상품 데이터 조립, 가격·프로모션 조합, 재고·배송 약속 표시, 2계층 캐시. 그리고 이 전부를 하루 수천억 건 규모로 서빙하는 일.</p>
+    </div>
+    <div class="no">
+      <h3>소유하지 않은 것</h3>
+      <p>검색 랭킹, 결제, 재고 원장, 프론트엔드 렌더링. 남의 팀 서비스이고, 장애가 나도 우리 페이지는 떠 있어야 한다.</p>
+    </div>
+  </div>
+</section>
+
+<section id="roster">
+  <div class="sec-head"><span class="sec-num">02</span><h2>구성원</h2></div>
+  <p class="sec-note">각자 보는 지표가 다르고, 그래서 요구가 서로 충돌한다. 붉은 칸이 나와 부딪히는 지점이다.</p>
+
+  <div class="filters" role="group" aria-label="직군 필터">
+    <button data-f="all" aria-pressed="true">전체 13</button>
+    <button data-f="exec" aria-pressed="false">경영</button>
+    <button data-f="pm" aria-pressed="false">기획 · 데이터</button>
+    <button data-f="design" aria-pressed="false">디자인</button>
+    <button data-f="eng" aria-pressed="false">엔지니어링</button>
+    <button data-f="gate" aria-pressed="false">품질 · 보안</button>
+    <button data-f="ops" aria-pressed="false">운영 · 고객</button>
+  </div>
+
+  <div class="roster" id="grid">
+
+    <article class="card you" data-g="eng">
+      <div class="card-top">
+        <div class="mono-tile">ME</div>
+        <div><span class="card-id">ENG-00 · 입사 3주차</span>
+          <h3 class="card-name">나 <em>You</em></h3>
+          <p class="card-role">SDE II, Backend · PDP 팀</p></div>
+      </div>
+      <div class="tags"><span>구현</span><span>ADR 작성</span><span>온콜</span><span>반론권</span></div>
+      <blockquote>신입은 아니다. 하지만 이 스케일은 처음이다. "로컬에서는 되는데요"가 통하지 않는 곳이다.</blockquote>
+      <p class="meets"><b>이번 스프린트</b>26 SP가 배정됐다. 팀 개인 평균은 8~10 SP다. 무엇을 자를지는 내가 정해서 설득해야 한다.</p>
+    </article>
+
+    <article class="card" data-g="exec">
+      <div class="card-top">
+        <div class="mono-tile">한지</div>
+        <div><span class="card-id">EXEC-01 · 창업 28년차</span>
+          <h3 class="card-name">한지우 <em>Jiwoo Han</em></h3>
+          <p class="card-role">CEO · 공동창업자</p></div>
+      </div>
+      <div class="tags"><span>고객 가치</span><span>사업 지표</span><span>조직 속도</span></div>
+      <blockquote>경쟁사가 뭘 하는지는 관심 없습니다. 우리 고객이 지금 불편한 게 뭡니까?</blockquote>
+      <p class="meets friction"><b>충돌</b>기술 부채 상환 시간을 인정하지 않는다. 분기에 한 번, 경고 없이 "이거 왜 이렇게 느리죠?" 한 줄을 팀 전체에 포워딩해 스프린트를 뒤집는다.</p>
+    </article>
+
+    <article class="card" data-g="exec">
+      <div class="card-top">
+        <div class="mono-tile">EV</div>
+        <div><span class="card-id">EXEC-02 · 인프라 출신</span>
+          <h3 class="card-name">Elena Volkov</h3>
+          <p class="card-role">VP of Engineering, Retail Experience</p></div>
+      </div>
+      <div class="tags"><span>가용성</span><span>인프라 비용</span><span>OKR</span></div>
+      <blockquote>이 설계가 트래픽 10배에서도 유효한가요? 아니라면 언제 깨지는지 숫자로 알려주세요.</blockquote>
+      <p class="meets friction"><b>충돌</b>Tier-0 변경의 최종 승인자. 아무리 좋은 설계도 인프라 비용이 두 배가 되면 반려한다.</p>
+    </article>
+
+    <article class="card" data-g="pm">
+      <div class="card-top">
+        <div class="mono-tile">서지</div>
+        <div><span class="card-id">PM-01 · 이커머스 11년</span>
+          <h3 class="card-name">서지훈 <em>Jihoon Seo</em></h3>
+          <p class="card-role">Principal PM · 주 요구사항 발신자</p></div>
+      </div>
+      <div class="tags"><span>전환율</span><span>이탈률</span><span>A/B 테스트</span><span>PRD</span></div>
+      <blockquote>이거 스프린트 안에 같이 넣으면 얼마나 더 걸릴까요?</blockquote>
+      <p class="meets friction"><b>충돌</b>AC는 명확하게 쓰지만 엣지 케이스를 자주 빠뜨린다. 비기능 요구사항을 "나중에"로 미루려 하고, 그때마다 Diego와 부딪힌다. 나는 그 사이에 낀다.</p>
+    </article>
+
+    <article class="card" data-g="pm">
+      <div class="card-top">
+        <div class="mono-tile">최민</div>
+        <div><span class="card-id">PM-02 · 실험 플랫폼</span>
+          <h3 class="card-name">최민석 <em>Minseok Choi</em></h3>
+          <p class="card-role">Senior Data Scientist</p></div>
+      </div>
+      <div class="tags"><span>지표 정의</span><span>유의성</span><span>이벤트 스키마</span></div>
+      <blockquote>그 이벤트에 request_id가 없으면 퍼널을 못 이어붙입니다. 배포 전에 넣어주세요.</blockquote>
+      <p class="meets"><b>나에게 요구하는 것</b>이벤트 3종(render / dependency / staleness)을 스키마 그대로. 틀리면 릴리즈를 막는다.</p>
+    </article>
+
+    <article class="card" data-g="design">
+      <div class="card-top">
+        <div class="mono-tile">이서</div>
+        <div><span class="card-id">DSN-01 · Compass 기여자</span>
+          <h3 class="card-name">이서연 <em>Seoyeon Lee</em></h3>
+          <p class="card-role">Senior Product Designer, UX</p></div>
+      </div>
+      <div class="tags"><span>상태 매트릭스</span><span>접근성</span><span>21개 로케일</span></div>
+      <blockquote>배송 예정일을 못 가져오면 그 영역만 조용히 사라지게 해주세요. 스켈레톤이 영원히 도는 게 최악입니다.</blockquote>
+      <p class="meets friction"><b>충돌</b>이상적인 UX가 API 호출 수를 늘린다. 나는 그걸 200ms 안에 조립해야 한다.</p>
+    </article>
+
+    <article class="card" data-g="eng">
+      <div class="card-top">
+        <div class="mono-tile">PR</div>
+        <div><span class="card-id">ENG-01 · 재직 13년</span>
+          <h3 class="card-name">Priya Raghavan</h3>
+          <p class="card-role">Principal Engineer · 내 코드 리뷰어</p></div>
+      </div>
+      <div class="tags"><span>단순성</span><span>실패 모드</span><span>하위 호환</span></div>
+      <blockquote>동작하는 코드와 운영 가능한 코드는 다릅니다. 새벽 3시에 이 로그만 보고 원인을 찾을 수 있나요?</blockquote>
+      <p class="meets"><b>게이트</b>Tier-0 코드는 이 사람 승인 없이 머지되지 않는다. 답을 주지 않고 질문으로 가르친다. 근거를 대면 자기 의견을 철회한다.</p>
+    </article>
+
+    <article class="card" data-g="eng">
+      <div class="card-top">
+        <div class="mono-tile">김도</div>
+        <div><span class="card-id">ENG-02 · 4년차</span>
+          <h3 class="card-name">김도현 <em>Dohyun Kim</em></h3>
+          <p class="card-role">SDE III · 같은 팀 동료</p></div>
+      </div>
+      <div class="tags"><span>코드베이스 지식</span><span>페어링</span><span>컨벤션</span></div>
+      <blockquote>그거 CatalogAggregator에 비슷한 거 있어요. 새로 만들지 말고 확장하는 게 나을 듯.</blockquote>
+      <p class="meets"><b>접점</b>스프린트 티켓을 나눠 갖는다. 막혔을 때 물어볼 첫 번째 사람이고, 유일하게 압박하지 않는 사람이다.</p>
+    </article>
+
+    <article class="card" data-g="eng">
+      <div class="card-top">
+        <div class="mono-tile">DA</div>
+        <div><span class="card-id">SRE-01 · 온콜 베테랑</span>
+          <h3 class="card-name">Diego Alvarez</h3>
+          <p class="card-role">Senior SRE · Infrastructure Lead</p></div>
+      </div>
+      <div class="tags"><span>SLO</span><span>에러 버짓</span><span>부하 테스트</span><span>비용</span></div>
+      <blockquote>평균 응답시간은 관심 없습니다. p99.9랑, 캐시 미스일 때 오리진에 무슨 일이 생기는지 보여주세요.</blockquote>
+      <p class="meets friction"><b>충돌</b>새 기능을 기본적으로 위험으로 간주한다. 부하 테스트 통과 없이는 배포를 승인하지 않고, 일정 때문에 SLO를 깎지 않는다.</p>
+    </article>
+
+    <article class="card" data-g="gate">
+      <div class="card-top">
+        <div class="mono-tile">박하</div>
+        <div><span class="card-id">QA-01 · SDET</span>
+          <h3 class="card-name">박하늘 <em>Haneul Park</em></h3>
+          <p class="card-role">QA Lead</p></div>
+      </div>
+      <div class="tags"><span>검증 가능성</span><span>회귀</span><span>릴리즈 게이트</span></div>
+      <blockquote>'적절히 처리한다'가 정확히 뭘 의미하나요? 테스트로 못 씁니다.</blockquote>
+      <p class="meets"><b>게이트</b>AC에 측정 불가능한 표현이 있으면 되묻는다. 버그는 재현 절차와 함께 되돌아온다.</p>
+    </article>
+
+    <article class="card" data-g="gate">
+      <div class="card-top">
+        <div class="mono-tile">NF</div>
+        <div><span class="card-id">SEC-01 · AppSec</span>
+          <h3 class="card-name">Noah Fischer</h3>
+          <p class="card-role">Security Engineer</p></div>
+      </div>
+      <div class="tags"><span>데이터 노출</span><span>PCI-DSS</span><span>개인정보</span></div>
+      <blockquote>이 API 응답에 셀러의 내부 정산 ID가 왜 들어있죠? 지금 마스킹해주세요.</blockquote>
+      <p class="meets"><b>게이트</b>지적은 정중하지만 협상 불가 항목이 있다. 응답에 개인정보가 새면 그 자리에서 막는다.</p>
+    </article>
+
+    <article class="card" data-g="ops">
+      <div class="card-top">
+        <div class="mono-tile">정유</div>
+        <div><span class="card-id">OPS-02 · CS 10년</span>
+          <h3 class="card-name">정유진 <em>Yujin Jeong</em></h3>
+          <p class="card-role">Customer Service Lead, KR/JP</p></div>
+      </div>
+      <div class="tags"><span>VOC</span><span>클레임 건수</span><span>상담원 부담</span></div>
+      <blockquote>고객은 '재고 있음'이라고 떠서 주문했는데 다음 날 취소 메일을 받았어요. 이거 화면 문제 아닙니까?</blockquote>
+      <p class="meets"><b>접점</b>버그 리포트의 최전선. 실제 문의 캡처를 그대로 붙여 우선순위를 끌어올린다. 30일 PDP 문의 11,200건.</p>
+    </article>
+
+    <article class="card" data-g="ops">
+      <div class="card-top">
+        <div class="mono-tile">AB</div>
+        <div><span class="card-id">OPS-01 · 물류센터 출신</span>
+          <h3 class="card-name">Aisha Bello</h3>
+          <p class="card-role">Fulfillment Operations Manager</p></div>
+      </div>
+      <div class="tags"><span>배송 약속</span><span>재고 오차</span><span>취소율</span></div>
+      <blockquote>화면에 '내일 도착'이라고 띄우면, 창고는 오늘 밤 안에 그걸 실어야 합니다. 3% 틀리면 하루 4만 건이 클레임입니다.</blockquote>
+      <p class="meets"><b>접점</b>화면의 거짓말이 창고의 혼란이 된다. "모르면 모른다고 표시하라"가 이 사람의 요구다.</p>
+    </article>
+
+  </div>
+</section>
+
+<section id="map">
+  <div class="sec-head"><span class="sec-num">03</span><h2>요구와 게이트가 흐르는 방향</h2></div>
+  <p class="sec-note">요구는 위와 옆에서 들어오고, 게이트는 아래에서 막는다. 서지훈과 Diego 사이의 붉은 선이 이 팀의 상시 긴장이며, 그 한가운데 내가 있다.</p>
+
+  <div class="map-scroll">
+  <svg viewBox="0 0 960 540" role="img" aria-label="구성원 간 요구·승인·게이트·갈등 관계도">
+    <defs>
+      <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M0 0 L10 5 L0 10 z" fill="var(--accent)"/>
+      </marker>
+      <marker id="arf" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M0 0 L10 5 L0 10 z" fill="var(--friction)"/>
+      </marker>
+      <marker id="arg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M0 0 L10 5 L0 10 z" fill="var(--ink-faint)"/>
+      </marker>
+    </defs>
+
+    <g stroke="var(--accent)" stroke-width="1.4" fill="none" marker-end="url(#ar)">
+      <path d="M480 74 L480 106"/>
+      <path d="M440 152 L215 218"/>
+      <path d="M520 152 L745 218"/>
+      <path d="M258 262 L400 274"/>
+      <path d="M702 262 L560 274"/>
+      <path d="M140 372 L410 300"/>
+      <path d="M290 372 L440 302"/>
+      <path d="M170 448 L172 300"/>
+      <path d="M330 448 L216 296"/>
+    </g>
+
+    <g stroke="var(--ink-faint)" stroke-width="1.4" fill="none" stroke-dasharray="5 4" marker-end="url(#arg)">
+      <path d="M690 372 L546 298"/>
+      <path d="M846 380 L560 292"/>
+      <path d="M690 452 L552 306"/>
+      <path d="M480 358 L480 314"/>
+    </g>
+
+    <path d="M170 236 Q 480 168 790 236" stroke="var(--friction)" stroke-width="1.6" fill="none"
+          marker-end="url(#arf)" marker-start="url(#arf)"/>
+    <text x="480" y="196" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11"
+          fill="var(--friction)" letter-spacing="1">일정 vs 안정성</text>
+
+    <g font-family="IBM Plex Sans KR, sans-serif">
+      <g id="n">
+        <rect x="410" y="30" width="140" height="44" fill="var(--surface-2)" stroke="var(--hairline)"/>
+        <text x="480" y="49" text-anchor="middle" font-size="14" font-weight="600" fill="var(--ink)">한지우</text>
+        <text x="480" y="65" text-anchor="middle" font-size="10.5" fill="var(--ink-faint)">CEO</text>
+
+        <rect x="410" y="108" width="140" height="44" fill="var(--surface-2)" stroke="var(--hairline)"/>
+        <text x="480" y="127" text-anchor="middle" font-size="14" font-weight="600" fill="var(--ink)">Elena Volkov</text>
+        <text x="480" y="143" text-anchor="middle" font-size="10.5" fill="var(--ink-faint)">VP Engineering</text>
+
+        <rect x="100" y="218" width="150" height="46" fill="var(--surface-2)" stroke="var(--hairline)"/>
+        <text x="175" y="238" text-anchor="middle" font-size="14" font-weight="600" fill="var(--ink)">서지훈</text>
+        <text x="175" y="254" text-anchor="middle" font-size="10.5" fill="var(--ink-faint)">PM · 요구사항</text>
+
+        <rect x="710" y="218" width="150" height="46" fill="var(--surface-2)" stroke="var(--hairline)"/>
+        <text x="785" y="238" text-anchor="middle" font-size="14" font-weight="600" fill="var(--ink)">Diego Alvarez</text>
+        <text x="785" y="254" text-anchor="middle" font-size="10.5" fill="var(--ink-faint)">SRE · NFR</text>
+
+        <rect x="400" y="270" width="160" height="48" fill="var(--accent)" stroke="var(--accent)"/>
+        <text x="480" y="291" text-anchor="middle" font-size="15" font-weight="600" fill="var(--surface)">나</text>
+        <text x="480" y="307" text-anchor="middle" font-size="10.5" fill="var(--surface)" opacity=".85">SDE II · 구현</text>
+
+        <rect x="70" y="372" width="140" height="44" fill="var(--surface-2)" stroke="var(--hairline)"/>
+        <text x="140" y="391" text-anchor="middle" font-size="14" font-weight="600" fill="var(--ink)">이서연</text>
+        <text x="140" y="407" text-anchor="middle" font-size="10.5" fill="var(--ink-faint)">UX · 상태 매트릭스</text>
+
+        <rect x="228" y="372" width="140" height="44" fill="var(--surface-2)" stroke="var(--hairline)"/>
+        <text x="298" y="391" text-anchor="middle" font-size="14" font-weight="600" fill="var(--ink)">최민석</text>
+        <text x="298" y="407" text-anchor="middle" font-size="10.5" fill="var(--ink-faint)">DS · 지표 스펙</text>
+
+        <rect x="410" y="358" width="140" height="44" fill="var(--surface-2)" stroke="var(--hairline)"/>
+        <text x="480" y="377" text-anchor="middle" font-size="14" font-weight="600" fill="var(--ink)">김도현</text>
+        <text x="480" y="393" text-anchor="middle" font-size="10.5" fill="var(--ink-faint)">동료 · 페어링</text>
+
+        <rect x="620" y="372" width="140" height="44" fill="var(--surface-2)" stroke="var(--hairline)"/>
+        <text x="690" y="391" text-anchor="middle" font-size="14" font-weight="600" fill="var(--ink)">Priya</text>
+        <text x="690" y="407" text-anchor="middle" font-size="10.5" fill="var(--ink-faint)">코드 리뷰 게이트</text>
+
+        <rect x="778" y="380" width="140" height="44" fill="var(--surface-2)" stroke="var(--hairline)"/>
+        <text x="848" y="399" text-anchor="middle" font-size="14" font-weight="600" fill="var(--ink)">박하늘</text>
+        <text x="848" y="415" text-anchor="middle" font-size="10.5" fill="var(--ink-faint)">QA 게이트</text>
+
+        <rect x="100" y="448" width="140" height="44" fill="var(--surface-2)" stroke="var(--hairline)"/>
+        <text x="170" y="467" text-anchor="middle" font-size="14" font-weight="600" fill="var(--ink)">정유진</text>
+        <text x="170" y="483" text-anchor="middle" font-size="10.5" fill="var(--ink-faint)">CS · VOC</text>
+
+        <rect x="262" y="448" width="140" height="44" fill="var(--surface-2)" stroke="var(--hairline)"/>
+        <text x="332" y="467" text-anchor="middle" font-size="14" font-weight="600" fill="var(--ink)">Aisha Bello</text>
+        <text x="332" y="483" text-anchor="middle" font-size="10.5" fill="var(--ink-faint)">물류 · 현실 검증</text>
+
+        <rect x="620" y="452" width="140" height="44" fill="var(--surface-2)" stroke="var(--hairline)"/>
+        <text x="690" y="471" text-anchor="middle" font-size="14" font-weight="600" fill="var(--ink)">Noah Fischer</text>
+        <text x="690" y="487" text-anchor="middle" font-size="10.5" fill="var(--ink-faint)">보안 게이트</text>
+      </g>
+    </g>
+  </svg>
+  </div>
+
+  <div class="legend">
+    <span><i style="border-color:var(--accent)"></i>요구가 들어오는 방향</span>
+    <span><i style="border-color:var(--ink-faint);border-top-style:dashed"></i>통과해야 하는 게이트</span>
+    <span><i style="border-color:var(--friction)"></i>상시 갈등</span>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>이 사람들은 대화창에서 직접 부를 수 있다. 요구사항에는 의도적으로 빈칸과 모순이 있고, 묻지 않으면 알려주지 않는다 — 실제 회사처럼.</p>
+    <div class="cmds">
+      <code>스프린트 플래닝</code>
+      <code>스탠드업</code>
+      <code>서지훈에게 질문: …</code>
+      <code>코드 리뷰 요청</code>
+      <code>QA 제출</code>
+      <code>장애 발생</code>
+      <code>Meridian Day 시뮬레이션</code>
+    </div>
+    <p class="fine">모든 회사명 · 인물 · 수치는 시뮬레이션용 허구입니다</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var btns = document.querySelectorAll('.filters button');
+  var cards = document.querySelectorAll('#grid .card');
+  btns.forEach(function(b){
+    b.addEventListener('click', function(){
+      var f = b.dataset.f;
+      btns.forEach(function(x){ x.setAttribute('aria-pressed', String(x === b)); });
+      cards.forEach(function(c){
+        c.hidden = !(f === 'all' || c.dataset.g === f);
+      });
+    });
+  });
+})();
+</script>
