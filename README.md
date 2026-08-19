@@ -34,14 +34,17 @@
 
 ## 구성원 시각화
 
-구성원 13명을 한눈에 보는 페이지: **[company/team.html](company/team.html)**
-(직군 필터, 인물 카드, 요구·게이트·갈등 관계도 — 아티팩트로도 발행됨)
+**[company/office.html](company/office.html)** — 게임 화면. 구성원이 NPC로 서 있고, 걸어가서 말을 겁니다.
+방향키로 이동 · ↑ 로 대화 / 사다리 · Q 로 퀘스트(스프린트 티켓) 창. 대화 끝에 나오는 명령어를 Claude에 입력하면 그 대화가 실제로 이어집니다.
+
+**[company/team.html](company/team.html)** — 문서형 인물 카드. 직군 필터, 관심사, 요구·게이트·갈등 관계도.
 
 ## 문서 구조
 
 ```
 company/          회사 설정 — 조직, 사람, 트래픽 가정, 아키텍처, 프로세스
-  team.html                   ⭐ 구성원 13명 시각화 (필터 + 관계도)
+  office.html                 ⭐ 게임 화면 — NPC에게 말 걸기
+  team.html                   구성원 13명 인물 카드 (필터 + 관계도)
   00-company-overview.md      회사 개요, 리더십 원칙, 문화
   01-org-and-people.md        ⭐ 구성원 페르소나 카드 (누가 무엇을 요구하는가)
   02-scale-and-traffic.md     ⭐ 트래픽·SLO·비용 제약 (모든 설계의 전제)
