@@ -1,0 +1,71 @@
+groups:
+  # ── 기록 규칙: SLO를 한 줄짜리 지표로 미리 계산해 둔다 ────────────────────
+  - name: pdp-slo-recording
+    interval: 5s
+    rules:
+      - record: pdp:latency_p50
+        expr: histogram_quantile(0.50, sum by (service, le) (rate(pdp_request_duration_seconds_bucket[1m])))
+      - record: pdp:latency_p99
+        expr: histogram_quantile(0.99, sum by (service, le) (rate(pdp_request_duration_seconds_bucket[1m])))
+      - record: pdp:latency_p999
+        expr: histogram_quantile(0.999, sum by (service, le) (rate(pdp_request_duration_seconds_bucket[1m])))
+      - record: pdp:throughput_rps
+        expr: sum by (service) (rate(pdp_request_duration_seconds_count[1m]))
+      - record: pdp:error_ratio
+        expr: |
+          sum by (service) (rate(pdp_requests_total{outcome!="ok"}[1m]))
+            /
+          clamp_min(sum by (service) (rate(pdp_requests_total[1m])), 0.001)
+      - record: pdp:cache_hit_ratio
+        expr: |
+          sum by (service) (rate(pdp_cache_access_total{result="hit"}[1m]))
+            /
+          clamp_min(sum by (service) (rate(pdp_cache_access_total[1m])), 0.001)
+      - record: depsim:origin_load_ratio
+        expr: depsim_current_rps / clamp_min(depsim_capacity_rps, 1)
+
+  # ── 알람: Diego가 걸어둔 조건 그대로 ──────────────────────────────────────
+  - name: pdp-slo-alerts
+    rules:
+      - alert: PdpLatencyBreach
+        expr: pdp:latency_p99 > 0.120
+        for: 1m
+        labels: { severity: sev2, owner: pdp-team }
+        annotations:
+          summary: "PDP p99 {{ $value | humanizeDuration }} — SLO 120ms 초과 ({{ $labels.service }})"
+          runbook: platform/README.md#런북
+
+      - alert: PdpTailLatencyBreach
+        expr: pdp:latency_p999 > 0.350
+        for: 1m
+        labels: { severity: sev2, owner: pdp-team }
+        annotations:
+          summary: "PDP p99.9 {{ $value | humanizeDuration }} — SLO 350ms 초과"
+
+      - alert: PdpAvailabilityBreach
+        expr: pdp:error_ratio > 0.001
+        for: 2m
+        labels: { severity: sev1, owner: pdp-team }
+        annotations:
+          summary: "PDP 에러율 {{ $value | humanizePercentage }} — 가용성 99.99% 위반"
+
+      - alert: CacheHitRatioLow
+        expr: pdp:cache_hit_ratio < 0.985 and pdp:throughput_rps > 50
+        for: 2m
+        labels: { severity: sev2, owner: pdp-team }
+        annotations:
+          summary: "캐시 히트율 {{ $value | humanizePercentage }} — 오리진이 위험합니다"
+
+      - alert: OriginOverloaded
+        expr: rate(depsim_requests_total{outcome="overloaded"}[1m]) > 0
+        for: 30s
+        labels: { severity: sev1, owner: pdp-team }
+        annotations:
+          summary: "{{ $labels.service }} 오리진 용량 초과 — 남의 팀 서비스를 죽이는 중입니다"
+
+      - alert: OriginNearCapacity
+        expr: depsim:origin_load_ratio > 0.7
+        for: 1m
+        labels: { severity: sev3, owner: pdp-team }
+        annotations:
+          summary: "{{ $labels.service }} 용량의 {{ $value | humanizePercentage }} 사용 중"

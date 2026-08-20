@@ -1,0 +1,170 @@
+# Meridian 로컬 플랫폼 — 사내 플랫폼팀이 제공하는 개발 환경
+#
+#   docker compose up -d              기본 스택 (의존성 시뮬 + Redis + Kafka + 관측)
+#   docker compose --profile legacy up -d   레거시 오케스트레이터까지 (비교 기준선)
+#   docker compose --profile pdp up -d      당신의 pdp-service까지
+#
+# 주의: pdp-service 프로필은 services/pdp-service 에 Dockerfile이 생긴 뒤에만 동작합니다.
+name: meridian
+
+services:
+  # ── 의존 서비스 시뮬레이터 ────────────────────────────────────────────────
+  # PDP가 호출하는 5개 다운스트림. 관리 API로 지연·에러·용량을 주입한다.
+  dependency-sim:
+    build: ./dependency-sim
+    container_name: meridian-depsim
+    environment:
+      WORKERS: 4
+    ports:
+      - "9000:9000"   # 서비스 트래픽
+      - "9001:9001"   # 관리 · 메트릭
+    cpus: 2
+    mem_limit: 512m
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:9001/healthz"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  # ── 캐시 ────────────────────────────────────────────────────────────────
+  # maxmemory를 일부러 작게 잡았다. 7.2억 SKU를 다 담을 수 없다는 현실을 재현한다.
+  redis:
+    image: redis:7-alpine
+    container_name: meridian-redis
+    command: >
+      redis-server
+      --maxmemory 256mb
+      --maxmemory-policy allkeys-lru
+      --save ""
+      --appendonly no
+    ports: ["6379:6379"]
+    cpus: 1
+    mem_limit: 384m
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  # ── 이벤트 스트림 (Kafka API 호환, ZooKeeper 없음) ─────────────────────────
+  # 토픽: catalog.changed / price.changed  → 캐시 무효화용
+  redpanda:
+    image: redpandadata/redpanda:v24.2.7
+    container_name: meridian-redpanda
+    command:
+      - redpanda start
+      - --smp 1
+      - --overprovisioned
+      - --node-id 0
+      - --kafka-addr PLAINTEXT://0.0.0.0:29092,OUTSIDE://0.0.0.0:9092
+      - --advertise-kafka-addr PLAINTEXT://redpanda:29092,OUTSIDE://localhost:9092
+      - --check=false
+    ports:
+      - "9092:9092"
+      - "9644:9644"
+    cpus: 1
+    mem_limit: 1g
+    healthcheck:
+      test: ["CMD-SHELL", "rpk cluster health | grep -q 'Healthy:.*true'"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+
+  # ── 관계형 저장소 (필요해질 때 쓰세요) ──────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: meridian-postgres
+    environment:
+      POSTGRES_USER: meridian
+      POSTGRES_PASSWORD: meridian
+      POSTGRES_DB: pdp
+    ports: ["5432:5432"]
+    cpus: 1
+    mem_limit: 512m
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U meridian"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  # ── 관측 ────────────────────────────────────────────────────────────────
+  prometheus:
+    image: prom/prometheus:v2.54.1
+    container_name: meridian-prometheus
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.retention.time=24h
+      - --web.enable-remote-write-receiver   # k6 결과를 여기로 밀어넣는다
+      - --enable-feature=native-histograms
+    volumes:
+      - ./observability/prometheus:/etc/prometheus:ro
+    ports: ["9090:9090"]
+    cpus: 1
+    mem_limit: 768m
+
+  grafana:
+    image: grafana/grafana:11.2.2
+    container_name: meridian-grafana
+    environment:
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_ANONYMOUS_ORG_ROLE: Admin
+      GF_AUTH_DISABLE_LOGIN_FORM: "true"
+      GF_USERS_DEFAULT_THEME: dark
+      GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH: /var/lib/grafana/dashboards/pdp-slo.json
+    volumes:
+      - ./observability/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./observability/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    ports: ["3000:3000"]
+    depends_on: [prometheus]
+    cpus: 1
+    mem_limit: 512m
+
+  # ── 비교 기준선: 레거시 오케스트레이터 ──────────────────────────────────────
+  # 순차 호출 · 캐시 없음 · 폴백 없음. 당신이 이겨야 할 숫자를 만들어 준다.
+  legacy:
+    build: ../services/legacy-orchestrator
+    container_name: meridian-legacy
+    profiles: ["legacy", "all"]
+    environment:
+      DEPENDENCY_SIM_URL: http://dependency-sim:9000
+      PORT: 8080
+    ports: ["8081:8080"]
+    cpus: 2            # ← 자원을 조인다. 대용량의 현상은 여기서 나온다
+    mem_limit: 1g
+    depends_on:
+      dependency-sim: { condition: service_healthy }
+
+  # ── 당신의 서비스 ────────────────────────────────────────────────────────
+  # services/pdp-service 에 Dockerfile을 만들면(PDP-2) 이 프로필이 살아납니다.
+  pdp-service:
+    build: ../services/pdp-service
+    container_name: meridian-pdp
+    profiles: ["pdp", "all"]
+    environment:
+      DEPENDENCY_SIM_URL: http://dependency-sim:9000
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      KAFKA_BOOTSTRAP: redpanda:29092
+      SPRING_PROFILES_ACTIVE: local
+    ports: ["8080:8080"]
+    cpus: 2            # ← 프로덕션 인스턴스 1대와 같은 조건. 이걸 늘리지 말고 코드를 고치세요
+    mem_limit: 1g
+    depends_on:
+      dependency-sim: { condition: service_healthy }
+      redis: { condition: service_healthy }
+
+  # ── 부하 생성기 ──────────────────────────────────────────────────────────
+  # docker compose run --rm k6 run /scripts/scenarios/l1-steady.js
+  k6:
+    image: grafana/k6:0.54.0
+    container_name: meridian-k6
+    profiles: ["tools"]
+    environment:
+      K6_PROMETHEUS_RW_SERVER_URL: http://prometheus:9090/api/v1/write
+      K6_PROMETHEUS_RW_TREND_STATS: "p(50),p(95),p(99),p(99.9),max"
+      TARGET: http://pdp-service:8080
+      DEPSIM_ADMIN: http://dependency-sim:9001
+    volumes:
+      - ./loadtest:/scripts:ro
+    cpus: 3            # 부하 생성기가 병목이 되면 측정이 거짓말을 한다
+    mem_limit: 1g

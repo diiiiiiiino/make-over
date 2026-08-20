@@ -39,6 +39,21 @@
 
 **[company/team.html](company/team.html)** — 문서형 인물 카드. 직군 필터, 관심사, 요구·게이트·갈등 관계도.
 
+## 실행 환경 (로컬 Docker)
+
+```bash
+make up          # 플랫폼 기동 — 의존성 시뮬 + Redis + Kafka + Prometheus/Grafana
+make baseline    # 레거시에 부하를 걸어 "이겨야 할 숫자"를 만든다
+make dash        # Grafana SLO 대시보드
+make chaos C=c1  # 장애 주입
+```
+
+플랫폼팀이 주는 것과 당신이 만들 것의 경계는 **[platform/README.md](platform/README.md)** 에 있습니다.
+핵심은 `dependency-sim` — 의존 서비스 5개의 지연·에러·**용량 한계**를 런타임에 주입할 수 있어서,
+캐시 히트율이 떨어지면 남의 팀 서비스가 실제로 503을 뱉기 시작합니다.
+
+당신이 만들 것은 `services/pdp-service` 하나입니다. → [계약 명세](services/pdp-service/README.md)
+
 ## 문서 구조
 
 ```
@@ -54,6 +69,10 @@ company/          회사 설정 — 조직, 사람, 트래픽 가정, 아키텍�
 templates/        PRD / 티켓 / ADR / COE(포스트모템) 템플릿
 backlog/          로드맵, 스프린트별 PRD와 티켓
 meetings/         회의록 (요구사항이 실제로 나오는 자리)
+platform/         ⭐ 로컬 실행 환경 (의존성 시뮬 · 관측 · 부하 테스트 · 장애 주입)
+services/
+  legacy-orchestrator/        비교 기준선 — 순차 호출, 캐시 없음, 폴백 없음
+  pdp-service/                ⭐ 여기가 당신 자리
 ```
 
 ## Sprint 1 (진행 중)

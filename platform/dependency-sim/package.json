@@ -1,0 +1,8 @@
+{
+  "name": "meridian-dependency-sim",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Meridian PDP가 호출하는 5개 의존 서비스 시뮬레이터 (지연·에러·용량 주입 가능)",
+  "main": "server.js",
+  "scripts": { "start": "node server.js" }
+}
